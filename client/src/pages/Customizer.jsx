@@ -40,14 +40,31 @@ const Customizer = () => {
           readFile={readFile}
         />
       case "aipicker":
-        return <AIPicker/>
+        return <AIPicker
+                prompt={prompt}
+                setPrompt={setPrompt}
+                generatingImg={generatingImg}
+                handleSubmit={handleSubmit}       
+              />
       default:
         return null
     }
   }
 
+  const handleSubmit = async (type) => {
+    if(!prompt) return alert("Please enter a prompt")
+    try {
+
+    } catch(error) {
+      alert(error)
+    } finally {
+      setGeneratingImg(false)
+      setActiveEditorTab("")
+    }
+  }
+
   const handleDecals = (type, result) => {
-    const decalType = DecalTypes(type)
+    const decalType = DecalTypes[type]
     state [decalType.stateProperty] = result
 
     if(!activeFilterTab[decalType.filterTab]){
@@ -65,13 +82,20 @@ const Customizer = () => {
         state.isFullTexture = false
         state.isLogoTexture = true
     }
+
+    setActiveFilterTab((prevState) => {
+      return {
+        ...prevState,
+        [tabName]: !prevState[tabName]
+      }
+    })
   }
 
   // read file types
   const readFile = (type) => {
     reader(file).then((result) => {
       handleDecals(type, result)
-      setActiveEditorTab("")
+      setActiveFilterTab("")
     })
   }
 
